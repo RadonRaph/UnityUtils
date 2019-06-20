@@ -9,7 +9,20 @@ public static class RaphExtends
 
     public static void setActiveDelayed(this GameObject gameObject, bool activeness, float delay)
     {
-        gameObject.GetComponent<MonoBehaviour>().StartCoroutine(ActiveDelay(gameObject, activeness, delay));
+        if (gameObject.GetComponent<MonoBehaviour>())
+        {
+            gameObject.GetComponent<MonoBehaviour>().StartCoroutine(ActiveDelay(gameObject, activeness, delay));
+        }
+        else if (Camera.main)
+        {
+            Camera.main.GetComponent<MonoBehaviour>().StartCoroutine(ActiveDelay(gameObject, activeness, delay));
+        }
+        else
+        {
+            GameObject obj = GameObject.Instantiate(new GameObject("$DELAY%"));
+            obj.GetComponent<MonoBehaviour>().StartCoroutine(ActiveDelay(gameObject, activeness, delay));
+            GameObject.Destroy(obj, delay + 0.1f);
+        }
     }
 
     public static IEnumerator ActiveDelay(GameObject obj, bool activeness, float delay)
