@@ -1,13 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 
-public static class RaphExtends
+public static class Extends
 {
+
+    public static void setActiveDelayed(this GameObject gameObject, bool activeness, float delay)
+    {
+        gameObject.GetComponent<MonoBehaviour>().StartCoroutine(ActiveDelay(gameObject, activeness, delay));
+    }
+
+    public static IEnumerator ActiveDelay(GameObject obj, bool activeness, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        obj.SetActive(activeness);
+    }
 
 
     //VECTORS
-    public static Vector2 ToVector2XY(this Vector3 v) {
+    public static Vector2 ToVector2XY(this Vector3 v)
+    {
 
         ///<summary>
         ///<para>return new Vector2(v.x, v.y);</para>
@@ -30,8 +44,8 @@ public static class RaphExtends
     ///</summary>
     public static Vector3 ToVector3Z(this Vector2 v)
     {
-        
-        
+
+
         ///</summary>
         return new Vector3(v.x, v.y, 0);
     }
@@ -52,14 +66,35 @@ public static class RaphExtends
         return new Vector3(0, v.x, v.y);
     }
 
-    
-    
+
+    //COLORS
+
+    public static ColorHSL toHSL(this Color c)
+    {
+
+        float h, s, l;
+        Color.RGBToHSV(c, out h, out s, out l);
+        return new ColorHSL(h*360, s, l);
+    }
+
+    public static Vector2 Abs(this Vector2 v)
+    {
+        return new Vector2(Mathf.Abs(v.x), Mathf.Abs(v.y));
+    }
+
+
+
+    public static Transform Find(this Transform t, string name)
+    {
+        return GameObject.Find(name).transform;
+    }
+
 
 }
 
-public class InputExtend : Input
+public class InputExtend
 {
-    public static Vector2 WorldMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    public static Vector2 WorldMousePos() { return Camera.main.ScreenToWorldPoint(Input.mousePosition); }
 
     public static Vector2 Direction2D()
     {
@@ -79,3 +114,27 @@ public class InputExtend : Input
         return res;
     }
 }
+
+public class ColorHSL
+{
+    public ColorHSL(float h, float s, float l)
+    {
+        hue = h;
+        saturation = s;
+        light = l;
+    }
+
+    public float hue;
+    public float saturation;
+    public float light;
+
+    public Color toRGB()
+    {
+        return Color.HSVToRGB(hue/360, saturation, light);
+
+
+    }
+
+}
+
+
