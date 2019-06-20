@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
-public static class Extends
+
+public static class RaphExtends
 {
 
     public static void setActiveDelayed(this GameObject gameObject, bool activeness, float delay)
