@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 
 public static class RaphExtends
@@ -87,7 +88,7 @@ public static class RaphExtends
 
         float h, s, l;
         Color.RGBToHSV(c, out h, out s, out l);
-        return new ColorHSL(h*360, s, l);
+        return new ColorHSL(h * 360, s, l);
     }
 
     public static Vector2 Abs(this Vector2 v)
@@ -102,6 +103,30 @@ public static class RaphExtends
         return GameObject.Find(name).transform;
     }
 
+
+    public static void startDelayed(this GameObject gameObject, Action action, float delay, params string[] args)
+    {
+
+        gameObject.GetComponent<MonoBehaviour>().StartCoroutine(_startDelayed(action, delay,args));
+
+    }
+
+    static IEnumerator _startDelayed(Action action, float delay, params string[] args)
+    {
+        yield return new WaitForSeconds(delay);
+        action.DynamicInvoke(args);
+    }
+
+
+    public static T RandomOne<T>(this T[] array)
+    {
+        return array[UnityEngine.Random.Range(0, array.Length)];
+    }
+
+    public static T RandomOne<T>(this List<T> array)
+    {
+        return array[UnityEngine.Random.Range(0, array.Count)];
+    }
 
 }
 
@@ -143,11 +168,10 @@ public class ColorHSL
 
     public Color toRGB()
     {
-        return Color.HSVToRGB(hue/360, saturation, light);
+        return Color.HSVToRGB(hue / 360, saturation, light);
 
 
     }
 
 }
-
 
