@@ -80,6 +80,11 @@ public static class RaphExtends
         return new Vector3(0, v.x, v.y);
     }
 
+    public static Vector3 Round(this Vector3 v)
+    {
+        return new Vector3(Mathf.Round(v.x), Mathf.Round(v.y), Mathf.Round(v.z));
+    }
+
 
     //COLORS
 
@@ -96,6 +101,15 @@ public static class RaphExtends
         return new Vector2(Mathf.Abs(v.x), Mathf.Abs(v.y));
     }
 
+    public static Vector2 Clamp(this Vector2 v, Vector2 min, Vector2 max)
+    {
+        return new Vector2(Mathf.Clamp(v.x, min.x, max.x), Mathf.Clamp(v.y, min.y, max.y));
+    }
+
+    public static Vector2 Clamp(this Vector2 v, float min, float max)
+    {
+        return new Vector2(Mathf.Clamp(v.x, min, max), Mathf.Clamp(v.y, min, max));
+    }
 
 
     public static Transform Find(this Transform t, string name)
@@ -107,7 +121,7 @@ public static class RaphExtends
     public static void startDelayed(this GameObject gameObject, Action action, float delay, params string[] args)
     {
 
-        gameObject.GetComponent<MonoBehaviour>().StartCoroutine(_startDelayed(action, delay,args));
+        gameObject.GetComponent<MonoBehaviour>().StartCoroutine(_startDelayed(action, delay, args));
 
     }
 
@@ -125,31 +139,85 @@ public static class RaphExtends
 
     public static T RandomOne<T>(this List<T> array)
     {
-        return array[UnityEngine.Random.Range(0, array.Count)];
+        if (array.Count > 1)
+            return array[UnityEngine.Random.Range(0, array.Count)];
+        else if (array.Count > 0)
+            return array[0];
+        else
+            return default(T);
+    }
+
+
+    public static void StartRandom(this AudioSource source)
+    {
+        source.Play();
+        source.time = UnityEngine.Random.Range(0f, source.clip.length);
+    }
+
+
+    public static int toInt(this bool b)
+    {
+        if (b == true)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
 }
 
+
+
 public class InputExtend
 {
-    public static Vector2 WorldMousePos() { return Camera.main.ScreenToWorldPoint(Input.mousePosition); }
+    public static Vector3 WorldMousePos { get { return Camera.main.ScreenToWorldPoint(Input.mousePosition); } }
 
-    public static Vector2 Direction2D()
+    public static Vector2 Direction2D
     {
-        Vector2 res = Vector2.zero;
-        if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.I))
-            res.y = 1;
+        get
+        {
+            Vector2 res = Vector2.zero;
+            if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.I))
+                res.y = 1;
+            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.K))
+                res.y = -1;
+
+            if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.J))
+                res.x = -1;
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.L))
+                res.x = 1;
+
+            res = res.normalized;
+
+            return res;
+        }
+    }
+
+
+    public static Vector3 Direction3D(Transform transform)
+    {
+
+        Vector3 res = Vector3.zero;
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.I))
+            res += transform.forward;
         else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.K))
-            res.y = -1;
+            res -= transform.forward;
 
         if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.J))
-            res.x = -1;
+            res -= transform.right;
         else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.L))
-            res.x = 1;
+            res += transform.right;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            res += transform.up;
 
         res = res.normalized;
 
         return res;
+
     }
 }
 
@@ -174,4 +242,3 @@ public class ColorHSL
     }
 
 }
-
