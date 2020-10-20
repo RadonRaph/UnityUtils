@@ -7,6 +7,75 @@ using System;
 
 public static class RaphExtends
 {
+    public static Vector3 MaxPosByVector(Vector3 distant, Vector3 source, float maxDistance, Vector3 axis, bool verbose = false)
+    {
+        Vector3 path = source - distant;
+
+
+        Vector3 result;
+
+        if (path.magnitude < maxDistance)
+        {
+            if (verbose)
+                Debug.Log("Inférieure au max: " + maxDistance.ToString());
+            //return distant;
+            result = distant;
+        }
+        else
+        {
+            float RelativeDist = maxDistance / path.magnitude;
+
+            float x = source.x + (RelativeDist * path.x) * -axis.x;
+            float y = source.y + (RelativeDist * path.y) * -axis.y;
+            float z = source.z + (RelativeDist * path.z) * -axis.z;
+
+            result = new Vector3(x, y, z);
+
+        }
+
+
+
+
+        if (verbose)
+        {
+            Debug.Log("Distance: " + path.magnitude);
+            Debug.DrawLine(source, distant, Color.red);
+            Debug.DrawLine(source, result, Color.green);
+        }
+
+        return result;
+    }
+
+    public static Vector3 PosByVector(Vector3 distant, Vector3 source, float Distance, Vector3 axis, bool verbose = false)
+    {
+        Vector3 path = source - distant;
+
+
+        Vector3 result;
+
+
+            float RelativeDist = Distance / path.magnitude;
+
+            float x = source.x + (RelativeDist * path.x) * -axis.x;
+            float y = source.y + (RelativeDist * path.y) * -axis.y;
+            float z = source.z + (RelativeDist * path.z) * -axis.z;
+
+            result = new Vector3(x, y, z);
+
+        
+
+
+
+
+        if (verbose)
+        {
+            Debug.Log("Distance: " + path.magnitude);
+            Debug.DrawLine(source, distant, Color.red);
+            Debug.DrawLine(source, result, Color.green);
+        }
+
+        return result;
+    }
 
     public static void setActiveDelayed(this GameObject gameObject, bool activeness, float delay)
     {
@@ -85,7 +154,69 @@ public static class RaphExtends
         return new Vector3(Mathf.Round(v.x), Mathf.Round(v.y), Mathf.Round(v.z));
     }
 
+    public static Vector3 Random(this Vector3 v)
+    {
+        return new Vector3(UnityEngine.Random.Range(-1, 1), UnityEngine.Random.Range(-1, 1), UnityEngine.Random.Range(-1, 1));
+    }
 
+    public static Vector3 Min(this Vector3 v, float min)
+    {
+        return new Vector3(Mathf.Min(v.x, min), Mathf.Min(v.y, min), Mathf.Min(v.z, min));
+    }
+
+    public static Vector3 Min(this Vector3 v, Vector3 min)
+    {
+        return new Vector3(Mathf.Min(v.x, min.x), Mathf.Min(v.y, min.y), Mathf.Min(v.z, min.z));
+    }
+
+    public static Vector3 Max(this Vector3 v, float max)
+    {
+        return new Vector3(Mathf.Max(v.x, max), Mathf.Max(v.y, max), Mathf.Max(v.z, max));
+    }
+
+    public static Vector3 Max(this Vector3 v, Vector3 max)
+    {
+        return new Vector3(Mathf.Max(v.x, max.x), Mathf.Max(v.y, max.y), Mathf.Max(v.z, max.z));
+    }
+
+    public static Vector3 Clamp(this Vector3 v, Vector3 min, Vector3 max)
+    {
+        return new Vector3(Mathf.Clamp(v.x, min.x, max.x), Mathf.Clamp(v.y, min.y, max.y), Mathf.Clamp(v.z, min.z, max.z));
+    }
+
+    public static Vector3 Clamp(this Vector3 v, float min, float max)
+    {
+        return new Vector3(Mathf.Clamp(v.x, min, max), Mathf.Clamp(v.y, min, max), Mathf.Clamp(v.z, min, max));
+    }
+
+    public static Vector3 Lerp(this Vector3 a, Vector3 b, float t)
+    {
+        return new Vector3(Mathf.Lerp(a.x, b.x, t), Mathf.Lerp(a.y, b.y, t), Mathf.Lerp(a.z, b.z, t));
+    }
+
+    public static Vector3 Abs(this Vector3 v)
+    {
+        return new Vector3(Mathf.Abs(v.x), Mathf.Abs(v.y), Mathf.Abs(v.z));
+    }
+
+     public static void BlendVolume(this AudioSource a, float Volume, float delay)
+    {
+        a.GetComponentInParent<MonoBehaviour>().StartCoroutine(_BlendVolume(a, Volume, delay));
+    }
+
+
+    static IEnumerator _BlendVolume(AudioSource source, float volume, float t)
+    {
+        float initVolume = source.volume;
+        float baseT = t;
+
+        while (t > 0)
+        {
+            t -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+            source.volume = Mathf.Lerp(initVolume, volume, (baseT - t) / baseT);
+        }
+    }
     //COLORS
 
     public static ColorHSL toHSL(this Color c)
@@ -117,6 +248,16 @@ public static class RaphExtends
         return GameObject.Find(name).transform;
     }
 
+    public static Bounds Mul(this Bounds b, float val)
+    {
+        return new Bounds(b.center, b.size * val);
+    }
+
+    public static Vector3 Mul(this Vector3 A, Vector3 B)
+    {
+        return  new Vector3(A.x * B.x, A.y * B.y, A.z * B.z);
+    }
+
 
     public static void startDelayed(this GameObject gameObject, Action action, float delay, params string[] args)
     {
@@ -134,7 +275,12 @@ public static class RaphExtends
 
     public static T RandomOne<T>(this T[] array)
     {
-        return array[UnityEngine.Random.Range(0, array.Length)];
+        if (array.Length > 1)
+            return array[UnityEngine.Random.Range(0, array.Length)];
+        else if (array.Length > 0)
+            return array[0];
+        else
+            return default(T);
     }
 
     public static T RandomOne<T>(this List<T> array)
@@ -165,6 +311,38 @@ public static class RaphExtends
         {
             return 0;
         }
+    }
+
+    public static bool toBool(this int i)
+    {
+        if (i >= 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //GAMEOBJECT
+    public static T GameobjectFindComponent<T>(this GameObject obj, string name)
+    {
+        GameObject o = GameObject.Find(name);
+        if (o != null)
+            return o.GetComponent<T>();
+        else
+        {
+            Debug.LogError("Enable to find "+ name, obj);
+            return default;
+        }
+
+
+    }
+
+    public static Vector3 toV3(this float f)
+    {
+        return new Vector3(f, f, f);
     }
 
 }
