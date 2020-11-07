@@ -217,6 +217,8 @@ public static class RaphExtends
             source.volume = Mathf.Lerp(initVolume, volume, (baseT - t) / baseT);
         }
     }
+
+
     //COLORS
 
     public static ColorHSL toHSL(this Color c)
@@ -291,6 +293,15 @@ public static class RaphExtends
             return array[0];
         else
             return default(T);
+    }
+
+    public static int RandomSign()
+    {
+        float v = UnityEngine.Random.Range(0, 100);
+        if (v > 50)
+            return 1;
+        else
+            return -1;
     }
 
 
