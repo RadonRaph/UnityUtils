@@ -217,6 +217,18 @@ public static class RaphExtends
             source.volume = Mathf.Lerp(initVolume, volume, (baseT - t) / baseT);
         }
     }
+    
+    public static Vector2Int oneDtoTwoD(int index, int width)
+    {
+		int x = index % width;
+		int y = index / width;
+		return new Vector2Int(x, y);
+	}
+
+	public static int twoDtoOneD(Vector2Int pos, int width)
+    {
+		return pos.y * width + pos.x;
+    }
 
 
     //COLORS
