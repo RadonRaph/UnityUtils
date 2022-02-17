@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public static class HDRPExtends 
+public static class HDRPExtends
 {
-   
+
     public static void FadeWeight(this Volume v, float value, float time)
     {
         v.gameObject.GetComponent<MonoBehaviour>().StartCoroutine(_FadeWeight(v, value, time));
