@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -45,6 +45,11 @@ namespace Raccoonlabs
         public static int ToLinearIndex(Vector2Int index, int width)
         {
             return index.x + index.y * width;
+        }
+        
+        public static int ToLinearIndex(int x, int y, int width)
+        {
+            return x + y * width;
         }
         
         public static int ToLinearIndex(Vector3Int index, int width, int height, int length)
