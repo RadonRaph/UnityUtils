@@ -54,5 +54,10 @@ namespace Raccoonlabs
             else
                 return -1;
         }
+        
+        public static Vector3 RandomPoint(this Bounds b)
+        {
+            return b.min + Random.value * (b.max - b.min);
+        }
     }
 }
