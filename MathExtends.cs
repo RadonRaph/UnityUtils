@@ -49,5 +49,22 @@ namespace Raccoonlabs
         {
             return (i > range.x && i < range.y);
         }
+        
+         public static void LookAtLock(this Transform t, Vector3 target, bool lockX, bool lockY, bool lockZ)
+        {
+            Vector3 _lock= t.eulerAngles;
+            t.LookAt(target);
+            Vector3 axis=t.eulerAngles;
+
+            if (!lockX)
+                _lock.x = axis.x;
+            if (!lockY)
+                _lock.y = axis.y;
+            if (!lockZ)
+                _lock.z = axis.z;
+            
+            
+            t.eulerAngles = _lock;
+        }
     }
 }
