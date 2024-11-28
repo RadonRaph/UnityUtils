@@ -90,7 +90,7 @@ namespace Raccoonlabs
         
         public static Vector3Int To3DIndex(int index, int width, int height)
         {
-            return new Vector3Int(index % width, (index / height)%height, index/(width*height));
+            return new Vector3Int(index % width, (index / width)%height, index/(width*height));
         }
 
         public static T[] Shuffle<T>(this T[] array)
